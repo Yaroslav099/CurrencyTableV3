@@ -8,16 +8,20 @@ const MySelect = styled.select `
   height : 40px;
 `
 
-let Select = ({allCurrencies,addNewCurrency,fetching}) => fetching? null : (
-  <MySelect onChange={addNewCurrency}>
-      {_.without(Object.keys(allCurrencies),'USD','EUR').map( currencyName => {
-         return (
-           <option key={currencyName} val={currencyName}>{currencyName}</option>
-         )
-      })}
+let Select = ({allCurrencies,addNewCurrency,visibleCurrencies}) => ( 
+
+  <MySelect onChange={(e) => addNewCurrency(e.target.value)}>
+      <option>Валюта</option>
+      {_.without(Object.keys(allCurrencies),...visibleCurrencies)
+        .map( currencyName => (
+          <option
+          key={currencyName} 
+          val={currencyName}>
+          {currencyName}
+          </option>
+      ))}
   </MySelect>
 )
-
 
 export default Select;
 

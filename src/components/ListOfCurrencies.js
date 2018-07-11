@@ -1,8 +1,8 @@
 import React from 'react'
 
-const VisibleCurrencies = ({visibleCurrencies,allCurrencies,deleteCurrency,date,fetching}) =>
-    fetching ? <h2>loading...</h2> :(
-   
+const ListOfCurrencies = ({visibleCurrencies,allCurrencies,deleteCurrency,date}) =>{ 
+
+return(    
    <table className="table table-hover">
     <thead>
      <tr>
@@ -13,10 +13,10 @@ const VisibleCurrencies = ({visibleCurrencies,allCurrencies,deleteCurrency,date,
      </tr>
     </thead>
     <tbody>
-
-    {visibleCurrencies.map( (item,index) =>{ 
+    {visibleCurrencies.map( (currencyKey) =>{ 
+      const item = allCurrencies[currencyKey]
         return (
-         <tr key={item.saleRateNB}>
+         <tr key={item.currency}>
            <th scope="row">{item.currency}</th>
            <td>{date}</td>
            <td>{item.saleRateNB}</td>
@@ -33,5 +33,5 @@ const VisibleCurrencies = ({visibleCurrencies,allCurrencies,deleteCurrency,date,
    </tbody>
   </table>
   )
-
-export default VisibleCurrencies;
+}
+export default ListOfCurrencies;

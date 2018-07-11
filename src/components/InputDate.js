@@ -14,15 +14,16 @@ let findOutMinAndMaxDate = (date) => {
     return _minDate
 }
 
-const DateFromInput = ({date,fetching}) =>fetching ? null: (
+
+const InputDate = ({getCurrenciesForAnotherDay}) => (
     <Date
     type='date'
     min={findOutMinAndMaxDate( moment().add(-1399, 'days').calendar())}
     max={findOutMinAndMaxDate( moment().add(-10, 'days').calendar())}
     className="form-control"
     placeholder="Date since 01.01.2014 till now"
-    onChange={date}
+    onChange={getCurrenciesForAnotherDay}
     />
-    )
+)
 
-export default DateFromInput;
+export default InputDate;

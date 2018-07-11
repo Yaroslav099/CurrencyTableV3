@@ -1,73 +1,61 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import VisibleCurrencies from './VisibleCurrencies';
-import {getCurrencies,addNewCurrency,deleteCurrency,changeDate} from '../actions/mapDispatchToProps';
+import ListOfCurrencies from './ListOfCurrencies';
+import {getCurrencies,addNewCurrency,deleteCurrency,loadingCurrencies} from '../actions/currenciesTableActions';
 import moment from 'moment';
+import _ from 'lodash';
 import Select from './Select';
-import Date from './Date';
+import InputDate from './InputDate';
 
-const decorate = () => (
- state => ({
-   visibleCurrencies : state.mainReducer['visibleCurrencies'],
-   allCurrencies : state.mainReducer['allCurrencies'],
-   initialState : state.mainReducer['initialState'],
-   fetching : state.mainReducer['fetching'],
-   date : state.mainReducer['date']
-
- })
-)
+const decorate = () => connect(
+  state => ({
+   visibleCurrencies : state.visibleCurrencies,
+   allCurrencies : state.allCurrencies,
+   initialState : state.initialState,
+   fetching : state.fetching,
+   date : state.date
+  }),
+ {getCurrencies,addNewCurrency,deleteCurrency})
 
 class Table extends React.Component {
-   
+     
    componentDidMount() {
-     this.props.getCurrencies();
-   }
-   
-   addNewCurrency = (e) => {
-    !this.props.initialState.includes(e.target.value) ? 
-     this.props.addNewCurrency(e.target.value) :
-     console.log('err')
+     this.props.getCurrencies('02.02.2017');
    }
 
-   date = (e) => {
+    getCurrenciesForAnotherDay = (e) => {
     let dateFromInput = moment(e.target.value,'YYYY/MM/DD');
-    let newDate = dateFromInput.format('DD.MM.YYYY');
+    let newFormatDateFromInput = dateFromInput.format('DD.MM.YYYY');
     let minDate = moment().add(-1399, 'days');
     let maxDate = moment().add(-10, 'days');
-  
-    newDate.length === 10 && dateFromInput >= minDate && dateFromInput <= maxDate &&
-
-    fetch(`https://api.privatbank.ua/p24api/exchange_rates?json&date=${newDate}`)
-    .then(res => res.json())
-    .then(data => this.props.changeDate(data));
-   }
+    
+    newFormatDateFromInput.length === 10 && dateFromInput >= minDate && dateFromInput <= maxDate &&
+    this.props.getCurrencies(newFormatDateFromInput)
+    }
      
-    render() {
-      
-      const {visibleCurrencies,allCurrencies,initialState,fetching,date,deleteCurrency}= this.props;
-        return (
+    render() { 
+      const {visibleCurrencies,allCurrencies,fetching,date,deleteCurrency,addNewCurrency}= this.props;
+       if(fetching) return <h2>Loading</h2>
+       else return (
          <React.Fragment>
-           <Select 
+            <Select 
              visibleCurrencies={visibleCurrencies}
              allCurrencies={allCurrencies}
              fetching={fetching}
-             initialState={initialState}
-             addNewCurrency={this.addNewCurrency}
-             />
-           <Date 
-             date={this.date}
-             fetching ={fetching}
-             />
-           <VisibleCurrencies 
+             addNewCurrency={addNewCurrency}
+             visibleCurrencies={visibleCurrencies}/>
+
+            <InputDate getCurrenciesForAnotherDay={this.getCurrenciesForAnotherDay}/>
+             
+            <ListOfCurrencies
              visibleCurrencies={visibleCurrencies}
              allCurrencies={allCurrencies}
-             initialState={initialState}
-             fetching={fetching}
              date={date}
              deleteCurrency={deleteCurrency}/>
+         
           </React.Fragment>
-        )      
+        )
     }
 }
 
-export default connect(decorate(),{getCurrencies,addNewCurrency,deleteCurrency,changeDate})(Table);
+export default decorate()(Table);
