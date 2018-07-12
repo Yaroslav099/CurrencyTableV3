@@ -38,22 +38,10 @@ class Table extends React.Component {
        if(fetching) return <h2>Loading</h2>
        else return (
          <React.Fragment>
-            <Select 
-             visibleCurrencies={visibleCurrencies}
-             allCurrencies={allCurrencies}
-             fetching={fetching}
-             addNewCurrency={addNewCurrency}
-             visibleCurrencies={visibleCurrencies}/>
-
-            <InputDate getCurrenciesForAnotherDay={this.getCurrenciesForAnotherDay}/>
-             
-            <ListOfCurrencies
-             visibleCurrencies={visibleCurrencies}
-             allCurrencies={allCurrencies}
-             date={date}
-             deleteCurrency={deleteCurrency}/>
-         
-          </React.Fragment>
+            <Select {...this.props}/>
+            <InputDate {...this.props} getCurrenciesForAnotherDay={this.getCurrenciesForAnotherDay}/>
+            <ListOfCurrencies {...this.props}/>
+         </React.Fragment>
         )
     }
 }
